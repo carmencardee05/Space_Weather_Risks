@@ -1,1 +1,18 @@
+# Credentials
+.env
+*.env
 
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Raw downloaded data
+data/raw/
+space_track_cache/
+
+# Temporary files
+*.tmp
