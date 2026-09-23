@@ -4,9 +4,7 @@ import pandas as pd
 import requests
 
 
-
 # Configuration
-
 
 START_DATE = "2017-12-02T00:00:00Z"
 END_DATE = "2019-01-30T23:59:59Z"
@@ -18,9 +16,6 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 OUTPUT_FILE = OUTPUT_DIR / "kp_daily_2017-12-02_to_2019-01-30.csv"
 
-
-
-# Download and process Kp data
 
 def main():
 
@@ -44,20 +39,14 @@ def main():
 
     response.raise_for_status()
 
+    # Get JSON response from GFZ
     data = response.json()
-    df = pd.DataFrame(data)
 
-    if "date" not in df.columns:
-        raise ValueError(
-            f"Expected a 'date' column. "
-            f"Received: {list(df.columns)}"
-        )
-
-    if "Kp" not in df.columns:
-        raise ValueError(
-            f"Expected a 'Kp' column. "
-            f"Received: {list(df.columns)}"
-        )
+    # Build DataFrame from the timestamp and Kp arrays
+    df = pd.DataFrame({
+        "date": data["datetime"],
+        "Kp": data["Kp"],
+    })
 
     # Convert timestamps
     df["date"] = pd.to_datetime(
@@ -66,16 +55,32 @@ def main():
         utc=True,
     )
 
-    df = df.dropna(subset=["date"]).copy()
-
-    # Convert 3-hour Kp measurements into daily maximum Kp
-    daily_kp = (
-        df.groupby(df["date"].dt.floor("D"))["Kp"]
-        .max()
-        .reset_index()
-        .rename(columns={"Kp": "daily_max_kp"})
+    # Make sure Kp is numeric
+    df["Kp"] = pd.to_numeric(
+        df["Kp"],
+        errors="coerce",
     )
 
+    # Remove invalid rows
+    df = df.dropna(
+        subset=["date", "Kp"]
+    ).copy()
+
+    # Convert 3-hour Kp measurements to daily maximum Kp
+    daily_kp = (
+        df.groupby(
+            df["date"].dt.floor("D")
+        )["Kp"]
+        .max()
+        .reset_index()
+        .rename(
+            columns={
+                "Kp": "daily_max_kp"
+            }
+        )
+    )
+
+    # Save CSV
     daily_kp.to_csv(
         OUTPUT_FILE,
         index=False,
@@ -83,6 +88,12 @@ def main():
 
     print(f"Saved {len(daily_kp)} daily observations.")
     print(f"Output: {OUTPUT_FILE}")
+
+    print("\nFirst 5 rows:")
+    print(daily_kp.head())
+
+    print("\nLast 5 rows:")
+    print(daily_kp.tail())
 
 
 if __name__ == "__main__":
