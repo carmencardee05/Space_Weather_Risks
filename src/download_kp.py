@@ -11,7 +11,10 @@ END_DATE = "2019-01-30T23:59:59Z"
 
 API_URL = "https://kp.gfz.de/app/json/"
 
-OUTPUT_DIR = Path("data/processed")
+# Repository root (download_kp.py is inside src/)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+OUTPUT_DIR = PROJECT_ROOT / "data" / "processed"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 OUTPUT_FILE = OUTPUT_DIR / "kp_daily_2017-12-02_to_2019-01-30.csv"
