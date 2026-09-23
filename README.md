@@ -35,7 +35,7 @@ storm and quiet periods.
 
 ## Repository Structure
 
-- `src/` — reusable Python analysis and data-processing code
+- `src/` — Python analysis and data-processing code
 - `notebooks/` — research notebooks and exploratory analysis
 - `data/` — processed datasets and instructions for obtaining raw data
 - `figures/` — figures generated from the analysis
