@@ -1,10 +1,9 @@
 """
 Process Space-Track orbital history into daily satellite altitude data.
 
-This script:
-1. Loads raw Space-Track GP history data.
-2. Converts satellite mean motion to approximate orbital altitude.
-3. Aggregates observations into daily median altitude measurements.
+1. Load raw Space-Track GP history data.
+2. Convert satellite mean motion to approximate orbital altitude.
+3. Puts all the observations together into daily median altitude measurements.
 """
 
 from pathlib import Path
@@ -15,10 +14,21 @@ import pandas as pd
 from orbital_altitude import mean_motion_to_altitude_km
 
 
-RAW_DATA_DIR = Path("data/raw")
-PROCESSED_DATA_DIR = Path("data/processed")
 
-PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
+# Paths
+
+
+
+# parent.parent gives the repository root.
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
+PROCESSED_DATA_DIR = PROJECT_ROOT / "data" / "processed"
+
+PROCESSED_DATA_DIR.mkdir(
+    parents=True,
+    exist_ok=True,
+)
 
 INPUT_FILE = RAW_DATA_DIR / (
     "gp_history_25544_43013_40967_33591_37849_39444_"
@@ -40,11 +50,25 @@ DAILY_ALTITUDE_FILE = (
 
 # Load and process orbital data
 
+
 def process_orbital_history():
 
     print(f"Loading orbital data from:\n{INPUT_FILE}")
 
-    with open(INPUT_FILE, "r", encoding="utf-8") as file:
+    # Give an error if the raw file is missing
+    if not INPUT_FILE.exists():
+        raise FileNotFoundError(
+            f"\nCould not find the Space-Track file:\n"
+            f"{INPUT_FILE}\n\n"
+            f"Make sure the JSON file is inside:\n"
+            f"{RAW_DATA_DIR}"
+        )
+
+    with open(
+        INPUT_FILE,
+        "r",
+        encoding="utf-8",
+    ) as file:
         records = json.load(file)
 
     rows = []
@@ -52,8 +76,14 @@ def process_orbital_history():
     for record in records:
 
         try:
-            norad_id = int(record["NORAD_CAT_ID"])
-            object_name = record.get("OBJECT_NAME", "")
+            norad_id = int(
+                record["NORAD_CAT_ID"]
+            )
+
+            object_name = record.get(
+                "OBJECT_NAME",
+                "",
+            )
 
             epoch = pd.to_datetime(
                 record["EPOCH"],
@@ -61,18 +91,28 @@ def process_orbital_history():
                 utc=True,
             )
 
-            mean_motion = float(record["MEAN_MOTION"])
+            mean_motion = float(
+                record["MEAN_MOTION"]
+            )
 
             eccentricity = float(
-                record.get("ECCENTRICITY", float("nan"))
+                record.get(
+                    "ECCENTRICITY",
+                    float("nan"),
+                )
             )
 
             inclination = float(
-                record.get("INCLINATION", float("nan"))
+                record.get(
+                    "INCLINATION",
+                    float("nan"),
+                )
             )
 
             semi_major_axis, altitude = (
-                mean_motion_to_altitude_km(mean_motion)
+                mean_motion_to_altitude_km(
+                    mean_motion
+                )
             )
 
             rows.append(
@@ -88,16 +128,32 @@ def process_orbital_history():
                 }
             )
 
-        except (KeyError, TypeError, ValueError) as error:
-            print(f"Skipping invalid record: {error}")
+        except (
+            KeyError,
+            TypeError,
+            ValueError,
+        ) as error:
+
+            print(
+                f"Skipping invalid record: {error}"
+            )
 
     df = pd.DataFrame(rows)
 
-    df = df.dropna(subset=["epoch"])
+    if df.empty:
+        raise ValueError(
+            "No valid orbital records were found."
+        )
+
+    df = df.dropna(
+        subset=["epoch"]
+    )
 
     df = df.sort_values(
         ["norad_id", "epoch"]
-    ).reset_index(drop=True)
+    ).reset_index(
+        drop=True
+    )
 
     df.to_csv(
         ALTITUDE_FILE,
@@ -105,12 +161,12 @@ def process_orbital_history():
     )
 
     print(
-        f"Saved {len(df)} processed orbital observations to:\n"
+        f"\nSaved {len(df)} processed "
+        f"orbital observations to:\n"
         f"{ALTITUDE_FILE}"
     )
 
     return df
-
 
 
 # Calculate daily satellite altitude
@@ -120,17 +176,27 @@ def calculate_daily_altitudes(df):
 
     df = df.copy()
 
-    df["date"] = df["epoch"].dt.floor("D")
+    # Convert each observation timestamp to its UTC day
+    df["date"] = (
+        df["epoch"].dt.floor("D")
+    )
 
+    # Take the median altitude for each satellite
+    # on each day
     daily = (
         df.groupby(
-            ["norad_id", "object_name", "date"],
+            [
+                "norad_id",
+                "object_name",
+                "date",
+            ],
             as_index=False,
         )["altitude_km"]
         .median()
         .rename(
             columns={
-                "altitude_km": "daily_median_altitude_km"
+                "altitude_km":
+                "daily_median_altitude_km"
             }
         )
     )
@@ -141,12 +207,12 @@ def calculate_daily_altitudes(df):
     )
 
     print(
-        f"Saved {len(daily)} daily satellite observations to:\n"
+        f"\nSaved {len(daily)} daily "
+        f"satellite observations to:\n"
         f"{DAILY_ALTITUDE_FILE}"
     )
 
     return daily
-
 
 
 # Run pipeline
@@ -154,17 +220,24 @@ def calculate_daily_altitudes(df):
 
 def main():
 
-    orbital_data = process_orbital_history()
+    orbital_data = (
+        process_orbital_history()
+    )
 
-    daily_data = calculate_daily_altitudes(
-        orbital_data
+    daily_data = (
+        calculate_daily_altitudes(
+            orbital_data
+        )
     )
 
     print("\nSatellites processed:")
 
     print(
         daily_data[
-            ["norad_id", "object_name"]
+            [
+                "norad_id",
+                "object_name",
+            ]
         ]
         .drop_duplicates()
         .to_string(index=False)

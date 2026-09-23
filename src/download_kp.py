@@ -11,7 +11,7 @@ END_DATE = "2019-01-30T23:59:59Z"
 
 API_URL = "https://kp.gfz.de/app/json/"
 
-# Repository root (download_kp.py is inside src/)
+# Repository root 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 OUTPUT_DIR = PROJECT_ROOT / "data" / "processed"
@@ -42,7 +42,7 @@ def main():
 
     response.raise_for_status()
 
-    # Get JSON response from GFZ
+ 
     data = response.json()
 
     # Build DataFrame from the timestamp and Kp arrays
@@ -69,7 +69,7 @@ def main():
         subset=["date", "Kp"]
     ).copy()
 
-    # Convert 3-hour Kp measurements to daily maximum Kp
+    # Convert 3 hour Kp measurements to daily maximum Kp
     daily_kp = (
         df.groupby(
             df["date"].dt.floor("D")
