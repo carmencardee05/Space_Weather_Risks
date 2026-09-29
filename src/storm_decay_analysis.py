@@ -45,6 +45,11 @@ MERGED_FILE = (
     / "daily_satellite_altitude_kp.csv"
 )
 
+DECAY_DATA_FILE = (
+    PROCESSED_DATA_DIR
+    / "daily_satellite_altitude_kp_decay.csv"
+)
+
 RESULTS_FILE = (
     RESULTS_DIR
     / "storm_vs_quiet_decay.csv"
@@ -153,28 +158,49 @@ def load_and_merge_data():
 # Calculate daily altitude changes
 
 
+# Calculate altitude changes and true decay rates
 def calculate_altitude_change(df):
-
     df = df.copy()
 
-    # Calculate change in median altitude from one
-    # observation day to the next for each satellite.
-    df["daily_altitude_change_km"] = (
+    # Makes sure observations are ordered correctly
+    df = df.sort_values(
+        ["norad_id", "date"]
+    ).reset_index(drop=True)
+
+    # Calculate actual elapsed time between observations.
+   
+    df["time_difference_days"] = (
+        df.groupby("norad_id")["date"]
+        .diff()
+        .dt.total_seconds()
+        / 86400.0
+    )
+
+    # Change in median altitude between observations
+    df["altitude_change_km"] = (
         df.groupby("norad_id")[
             "daily_median_altitude_km"
         ].diff()
     )
 
-    # Negative altitude change means the satellite
-    # moved downward.
+    # Convert altitude change into a decay RATE.
     #
-    # Multiply by -1 so positive values represent
-    # orbital decay.
-    df["orbital_decay_km"] = (
-        -df["daily_altitude_change_km"]
+    # Negative altitude change = satellite moved downward.
+    # Multiply by -1 so positive values mean orbital decay.
+    df["orbital_decay_km_day"] = (
+        -df["altitude_change_km"]
+        / df["time_difference_days"]
     )
 
+    # Remove impossible cases where elapsed time is
+    # zero or negative.
+    df.loc[
+        df["time_difference_days"] <= 0,
+        "orbital_decay_km_day"
+    ] = np.nan
+
     # Classify geomagnetic storm days
+    # Kp >= 5 = geomagnetic storm conditions
     df["storm_day"] = (
         df["daily_max_kp"]
         >= STORM_THRESHOLD
@@ -199,7 +225,7 @@ def analyze_satellites(df):
             ]
             .dropna(
                 subset=[
-                    "orbital_decay_km",
+                    "orbital_decay_km_day",
                     "daily_max_kp",
                 ]
             )
@@ -242,12 +268,12 @@ def analyze_satellites(df):
             continue
 
         storm_decay = (
-            storm["orbital_decay_km"]
+            storm["orbital_decay_km_day"]
             .mean()
         )
 
         quiet_decay = (
-            quiet["orbital_decay_km"]
+            quiet["orbital_decay_km_day"]
             .mean()
         )
 
@@ -261,7 +287,7 @@ def analyze_satellites(df):
         correlation, p_value = (
             stats.pearsonr(
                 satellite["daily_max_kp"],
-                satellite["orbital_decay_km"],
+                satellite["orbital_decay_km_day"],
             )
         )
 
@@ -325,6 +351,16 @@ def main():
 
     data = calculate_altitude_change(
         data
+    )
+    
+    data.to_csv(
+        DECAY_DATA_FILE,
+        index=False,
+    )
+    
+    print(
+        f"\nDaily decay dataset saved to:\n"
+        f"{DECAY_DATA_FILE}"
     )
 
     results = analyze_satellites(
