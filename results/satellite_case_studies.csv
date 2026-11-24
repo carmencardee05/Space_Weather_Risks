@@ -1,0 +1,13 @@
+norad_id,satellite_name,launch_year,INTLDES,altitude_km,altitude_band,daily_altitude_days,valid_consecutive_days,usable_decay_days,suspicious_days,storm_obs,behavior,mission_type_verified,operational_in_may_2024,mass_kg_verified,projected_area_m2_verified,propulsion_verified,specific_impulse_s_verified,cost_usd_verified,specification_source
+59538,STARLINK-31725,2024,2024-074E,273.043012228688,200-350 km,21,21,0,21,8,Sustained orbit raising candidate,,,,,,,,
+58658,COSMOS 2574,2023,2023-209A,320.06643778603575,200-350 km,21,21,20,1,8,Mixed orbital behavior,,,,,,,,
+48923,LEMUR 2 ANNABANANA,2021,2021-059AW,349.3903805218324,200-350 km,21,21,20,1,8,Sustained orbit lowering candidate,,,,,,,,
+45103,STARLINK-1196,2020,2020-006BM,427.5544397455597,350-500 km,21,21,20,1,8,Sustained orbit lowering candidate,,,,,,,,
+56187,LEMUR 2 SPACEGUS,2023,2023-054K,438.84566587951304,350-500 km,21,21,20,1,8,Sustained orbit lowering candidate,,,,,,,,
+43477,GRACE-FO 2,2018,2018-047B,486.172892170478,350-500 km,21,21,21,0,8,Relatively stable,,,,,,,,
+58316,FLOCK 4Q 34,2023,2023-174BN,516.4463540274564,500-650 km,20,19,19,0,8,Relatively stable,,,,,,,,
+59121,LYNK TOWER 5,2024,2024-043Z,521.9430031690908,500-650 km,21,21,21,0,8,Relatively stable,,,,,,,,
+46561,STARLINK-1709,2020,2020-070AF,554.297645018718,500-650 km,21,21,20,1,8,Relatively stable,,,,,,,,
+54361,EOS-6,2022,2022-158A,742.4929654391517,650-800 km,21,21,20,1,8,Relatively stable,,,,,,,,
+42808,IRIDIUM 117,2017,2017-039F,784.8127593198151,650-800 km,21,21,21,0,8,Relatively stable,,,,,,,,
+42063,SENTINEL 2B,2017,2017-013A,796.1467738258552,650-800 km,21,21,21,0,8,Relatively stable,,,,,,,,

@@ -1,0 +1,25 @@
+norad_id,satellite_name,altitude_km,altitude_restored_km,ideal_two_impulse_dv_ms,interpretation
+59538,STARLINK-31725,273.043012228688,1.0,0.5828290865936836,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+59538,STARLINK-31725,273.043012228688,10.0,5.822376303635579,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+58658,COSMOS 2574,320.06643778603575,1.0,0.5766963487161547,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+58658,COSMOS 2574,320.06643778603575,10.0,5.761152242937051,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+48923,LEMUR 2 ANNABANANA,349.3903805218324,1.0,0.572926189502887,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+48923,LEMUR 2 ANNABANANA,349.3903805218324,10.0,5.723513804981373,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+45103,STARLINK-1196,427.5544397455597,1.0,0.563074831098298,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+45103,STARLINK-1196,427.5544397455597,10.0,5.625163937064137,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+56187,LEMUR 2 SPACEGUS,438.84566587951304,1.0,0.5616750851213936,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+56187,LEMUR 2 SPACEGUS,438.84566587951304,10.0,5.61118958558815,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+43477,GRACE-FO 2,486.172892170478,1.0,0.5558706509649625,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+43477,GRACE-FO 2,486.172892170478,10.0,5.553240659865288,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+58316,FLOCK 4Q 34,516.4463540274564,1.0,0.5522099898414012,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+58316,FLOCK 4Q 34,516.4463540274564,10.0,5.516693884486834,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+59121,LYNK TOWER 5,521.9430031690908,1.0,0.5515496450589907,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+59121,LYNK TOWER 5,521.9430031690908,10.0,5.510101202357731,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+46561,STARLINK-1709,554.297645018718,1.0,0.5476892232394448,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+46561,STARLINK-1709,554.297645018718,10.0,5.471559749561372,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+54361,EOS-6,742.4929654391517,1.0,0.5261005379795236,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+54361,EOS-6,742.4929654391517,10.0,5.256018464604217,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+42808,IRIDIUM 117,784.8127593198151,1.0,0.521440697361264,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+42808,IRIDIUM 117,784.8127593198151,10.0,5.209493430145429,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+42063,SENTINEL 2B,796.1467738258552,1.0,0.5202043753858021,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
+42063,SENTINEL 2B,796.1467738258552,10.0,5.197149603930029,Hypothetical circular-orbit correction; NOT actual storm-induced delta-v
